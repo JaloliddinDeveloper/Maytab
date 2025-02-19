@@ -1,3 +1,4 @@
+using Maytab.Brokers.Storages;
 using Microsoft.AspNetCore.HttpOverrides;
 
 public class Program
@@ -8,7 +9,7 @@ public class Program
 
         builder.Services.AddControllers();
 
-       // builder.Services.AddTransient<IStorageBroker, StorageBroker>();
+       builder.Services.AddTransient<IStorageBroker, StorageBroker>();
 
         builder.Services.AddEndpointsApiExplorer();
 
