@@ -6,7 +6,7 @@ using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 namespace Maytab.Migrations
 {
     /// <inheritdoc />
-    public partial class CreateAllTablesInitialize : Migration
+    public partial class ChangeVariable : Migration
     {
         /// <inheritdoc />
         protected override void Up(MigrationBuilder migrationBuilder)
@@ -19,11 +19,12 @@ namespace Maytab.Migrations
                         .Annotation("Npgsql:ValueGenerationStrategy", NpgsqlValueGenerationStrategy.IdentityByDefaultColumn),
                     Name = table.Column<string>(type: "text", nullable: false),
                     Year = table.Column<int>(type: "integer", nullable: false),
-                    Klass = table.Column<string>(type: "text", nullable: false),
+                    Klass = table.Column<int>(type: "integer", nullable: false),
                     Picture = table.Column<string>(type: "text", nullable: false),
-                    Size = table.Column<double>(type: "double precision", nullable: false),
+                    Size = table.Column<string>(type: "text", nullable: false),
                     Description = table.Column<string>(type: "text", nullable: false),
                     Language = table.Column<string>(type: "text", nullable: false),
+                    BookPath = table.Column<string>(type: "text", nullable: false),
                     LanguageType = table.Column<int>(type: "integer", nullable: false)
                 },
                 constraints: table =>
