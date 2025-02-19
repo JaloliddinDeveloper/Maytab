@@ -1,4 +1,5 @@
 using Maytab.Brokers.Storages;
+using Maytab.Services.Foundations.Books;
 using Microsoft.AspNetCore.HttpOverrides;
 
 public class Program
@@ -10,6 +11,8 @@ public class Program
         builder.Services.AddControllers();
 
        builder.Services.AddTransient<IStorageBroker, StorageBroker>();
+
+       builder.Services.AddTransient<IBookService, BookService>();
 
         builder.Services.AddEndpointsApiExplorer();
 
