@@ -11,8 +11,8 @@ using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 namespace Maytab.Migrations
 {
     [DbContext(typeof(StorageBroker))]
-    [Migration("20250219203000_CreateAllTablesInitialize")]
-    partial class CreateAllTablesInitialize
+    [Migration("20250219213025_ChangeVariable")]
+    partial class ChangeVariable
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -32,13 +32,16 @@ namespace Maytab.Migrations
 
                     NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<int>("Id"));
 
+                    b.Property<string>("BookPath")
+                        .IsRequired()
+                        .HasColumnType("text");
+
                     b.Property<string>("Description")
                         .IsRequired()
                         .HasColumnType("text");
 
-                    b.Property<string>("Klass")
-                        .IsRequired()
-                        .HasColumnType("text");
+                    b.Property<int>("Klass")
+                        .HasColumnType("integer");
 
                     b.Property<string>("Language")
                         .IsRequired()
@@ -55,8 +58,9 @@ namespace Maytab.Migrations
                         .IsRequired()
                         .HasColumnType("text");
 
-                    b.Property<double>("Size")
-                        .HasColumnType("double precision");
+                    b.Property<string>("Size")
+                        .IsRequired()
+                        .HasColumnType("text");
 
                     b.Property<int>("Year")
                         .HasColumnType("integer");
