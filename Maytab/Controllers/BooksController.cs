@@ -13,14 +13,22 @@ namespace Maytab.Controllers
         private readonly string uploadsFolder = "/var/www/files";
         private readonly string baseUrl = "http://35.232.97.243:8080";
 
-        public BooksController(IBookService bookService)
-        {
+        public BooksController(IBookService bookService) =>
             this.bookService = bookService;
-        }
 
         [HttpPost("upload")]
         [DisableRequestSizeLimit]
-        public async Task<IActionResult> UploadFile(IFormFile picture, IFormFile file, string name, int year, int klass, string size, string description, string language, string bookpath, LanguageType languagetype)
+        public async Task<IActionResult> UploadFile(
+            IFormFile picture,
+            IFormFile file,
+            string name,
+            int year,
+            int klass,
+            string size,
+            string description,
+            string language,
+            string bookpath,
+            LanguageType languagetype)
         {
             if (file == null || file.Length == 0)
             {
@@ -30,6 +38,14 @@ namespace Maytab.Controllers
             if (picture == null || picture.Length == 0)
             {
                 return BadRequest("Picture file not found or empty.");
+            }
+
+            string[] allowedImageExtensions = { ".png", ".jpg", ".jpeg" };
+            string pictureExtension = Path.GetExtension(picture.FileName).ToLower();
+
+            if (!allowedImageExtensions.Contains(pictureExtension))
+            {
+                return BadRequest("Only PNG and JPG images are allowed.");
             }
 
             if (!Directory.Exists(uploadsFolder))
@@ -42,8 +58,7 @@ namespace Maytab.Controllers
                 string fileGuid = Guid.NewGuid().ToString();
                 string pictureGuid = Guid.NewGuid().ToString();
 
-                string fileExtension = Path.GetExtension(file.FileName);
-                string pictureExtension = Path.GetExtension(picture.FileName);
+                string fileExtension = Path.GetExtension(file.FileName).ToLower();
 
                 var mainFilePath = Path.Combine(uploadsFolder, fileGuid + fileExtension);
                 var pictureFilePath = Path.Combine(uploadsFolder, pictureGuid + pictureExtension);
@@ -65,19 +80,46 @@ namespace Maytab.Controllers
                     Name = name,
                     Year = year,
                     Klass = klass,
-                    Size=size,
-                    Description=description,
-                    Language=language,
-                    LanguageType=languagetype
+                    Size = size,
+                    Description = description,
+                    Language = language,
+                    LanguageType = languagetype
                 };
 
                 await this.bookService.AddBookAsync(fileRecord);
 
                 return Created(fileRecord);
             }
-            catch (Exception ex)
+            catch (Exception)
             {
                 return StatusCode(500, "Internal server error while processing the files.");
+            }
+        }
+
+        [HttpGet]
+        public async ValueTask<ActionResult<IQueryable<Book>>> GetAllBooksAsync()
+        {
+            try
+            {
+                var books = await this.bookService.GetAllBooksAsync();
+                return Ok(books);
+            }
+            catch (Exception ex)
+            {
+                return BadRequest(ex.Message);
+            }
+        }
+
+        [HttpDelete("{id}")]
+        public async ValueTask<ActionResult<Book>> DeleteBookAsyncById(int id)
+        {
+            try
+            {
+                return await this.bookService.RemoveBookByIdAsync(id);
+            }
+            catch (Exception ex)
+            {
+                return BadRequest(ex.InnerException);
             }
         }
     }
